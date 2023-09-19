@@ -1,4 +1,4 @@
-package com.crispytwig.updog.core.init;
+package com.crispytwig.updog.core.registry;
 
 import com.crispytwig.updog.Updog;
 import com.crispytwig.updog.entity.Pug;
@@ -11,7 +11,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class EntityInit {
+public class EntityRegistry {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
             DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Updog.MOD_ID);
 
@@ -26,7 +26,7 @@ public class EntityInit {
     public static final RegistryObject<EntityType<Retriever>> RETRIEVER =
             ENTITY_TYPES.register("retriever",
                     () -> EntityType.Builder.of(Retriever::new, MobCategory.CREATURE)
-                            .sized(1.5f, 1.75f)
+                            .sized(0.6F, 0.85F)
                             .build(new ResourceLocation(Updog.MOD_ID, "retriever").toString()));
 
     public static void register(IEventBus eventBus) {

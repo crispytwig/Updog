@@ -1,10 +1,13 @@
 package com.crispytwig.updog.entity;
 
+import com.mojang.serialization.Codec;
+import net.minecraft.Util;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.TimeUtil;
+import net.minecraft.util.*;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -13,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
+import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -27,8 +31,10 @@ import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.core.object.PlayState;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.IntFunction;
 
 public class Dog extends TamableAnimal implements GeoEntity, NeutralMob {
     private AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
@@ -36,8 +42,9 @@ public class Dog extends TamableAnimal implements GeoEntity, NeutralMob {
     private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Dog.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Dog.class, EntityDataSerializers.INT);
 
+
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
-    @javax.annotation.Nullable
+    @Nullable
     private UUID persistentAngerTarget;
 
     public Dog(EntityType<? extends Dog> pEntityType, Level pLevel) {
@@ -94,7 +101,7 @@ public class Dog extends TamableAnimal implements GeoEntity, NeutralMob {
 
         this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
     }
-    
+
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
         ItemStack itemstack = player.getItemInHand(interactionHand);
@@ -164,6 +171,25 @@ public class Dog extends TamableAnimal implements GeoEntity, NeutralMob {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
+        this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
+        this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        compoundTag.putByte("CollarColor", (byte)this.getCollarColor().getId());
+        this.addPersistentAngerSaveData(compoundTag);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        if (compoundTag.contains("CollarColor", 99)) {
+            this.setCollarColor(DyeColor.byId(compoundTag.getInt("CollarColor")));
+        }
+
+        this.readPersistentAngerSaveData(this.level(), compoundTag);
     }
 
     @Override
@@ -184,12 +210,12 @@ public class Dog extends TamableAnimal implements GeoEntity, NeutralMob {
         this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     public UUID getPersistentAngerTarget() {
         return this.persistentAngerTarget;
     }
 
-    public void setPersistentAngerTarget(@javax.annotation.Nullable UUID userID) {
+    public void setPersistentAngerTarget(@Nullable UUID userID) {
         this.persistentAngerTarget = userID;
     }
 
@@ -214,11 +240,11 @@ public class Dog extends TamableAnimal implements GeoEntity, NeutralMob {
 
     private <T extends GeoAnimatable> PlayState predicate(AnimationState<T> animationState) {
         if(animationState.isMoving()) {
-            animationState.getController().setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
+            animationState.getController().setAnimation(RawAnimation.begin().then("walk.maxhealth", Animation.LoopType.LOOP));
             return PlayState.CONTINUE;
         }
 
-        animationState.getController().setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
+        animationState.getController().setAnimation(RawAnimation.begin().then("idle.maxhealth", Animation.LoopType.LOOP));
         return PlayState.CONTINUE;
     }
 

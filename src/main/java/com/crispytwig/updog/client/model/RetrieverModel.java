@@ -1,8 +1,9 @@
 package com.crispytwig.updog.client.model;
 
 import com.crispytwig.updog.Updog;
-import com.crispytwig.updog.entity.Pug;
 import com.crispytwig.updog.entity.Retriever;
+import com.google.common.collect.Maps;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
@@ -10,6 +11,9 @@ import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
+
+import java.util.Locale;
+import java.util.Map;
 
 public class RetrieverModel extends GeoModel<Retriever> {
 
@@ -20,7 +24,14 @@ public class RetrieverModel extends GeoModel<Retriever> {
 
 	@Override
 	public ResourceLocation getTextureResource(Retriever entity) {
-		return new ResourceLocation(Updog.MOD_ID, "textures/entity/retriever.png");
+		if (entity.getVariant().getId() == 0) {
+			return new ResourceLocation(Updog.MOD_ID, "textures/entity/retriever/golden.png");
+		} else if (entity.getVariant().getId() == 1) {
+			return new ResourceLocation(Updog.MOD_ID, "textures/entity/retriever/chocolate.png");
+		} else if (entity.getVariant().getId() == 2) {
+			return new ResourceLocation(Updog.MOD_ID, "textures/entity/retriever/black.png");
+		}
+		return new ResourceLocation(Updog.MOD_ID, "textures/entity/retriever/golden.png");
 	}
 
 	@Override

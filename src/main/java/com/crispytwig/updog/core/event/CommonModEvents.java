@@ -1,7 +1,7 @@
 package com.crispytwig.updog.core.event;
 
 import com.crispytwig.updog.Updog;
-import com.crispytwig.updog.core.init.EntityInit;
+import com.crispytwig.updog.core.registry.EntityRegistry;
 import com.crispytwig.updog.entity.Pug;
 import com.crispytwig.updog.entity.Retriever;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -13,8 +13,8 @@ import net.minecraftforge.fml.common.Mod;
 public class CommonModEvents {
     @SubscribeEvent
     public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
-        event.put(EntityInit.PUG.get(), Pug.setAttributes());
-        event.put(EntityInit.RETRIEVER.get(), Retriever.setAttributes());
+        event.put(EntityRegistry.PUG.get(), Pug.setAttributes());
+        event.put(EntityRegistry.RETRIEVER.get(), Retriever.setAttributes());
     }
 
     @SubscribeEvent
