@@ -1,0 +1,18 @@
+{
+  "entity.pug.ambient": {
+    "category": "neutral",
+    "sounds": [
+      "updog:pug/breathe"
+    ],
+    "subtitle": "updog.subtitles.entity.pug.ambient"
+  },
+  "entity.pug.scream": {
+    "category": "neutral",
+    "sounds": [
+      "updog:pug/scream1",
+      "updog:pug/scream2",
+      "updog:pug/scream3"
+    ],
+    "subtitle": "updog.subtitles.entity.pug.scream"
+  }
+}
