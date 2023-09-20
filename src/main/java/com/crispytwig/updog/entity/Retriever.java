@@ -277,11 +277,14 @@ public class Retriever extends TamableAnimal implements GeoEntity, NeutralMob {
     }
 
     private <T extends GeoAnimatable> PlayState predicate(AnimationState<T> animationState) {
-        if(animationState.isMoving()) {
+        if (this.isInSittingPose()) {
+            animationState.getController().setAnimation(RawAnimation.begin().then("sit", Animation.LoopType.LOOP));
+            return PlayState.CONTINUE;
+        } else if (animationState.isMoving()) {
             animationState.getController().setAnimation(RawAnimation.begin().then("walk.maxhealth", Animation.LoopType.LOOP));
-        } else {
-            animationState.getController().setAnimation(RawAnimation.begin().then("idle.maxhealth", Animation.LoopType.LOOP));
+            return PlayState.CONTINUE;
         }
+        animationState.getController().setAnimation(RawAnimation.begin().then("idle.maxhealth", Animation.LoopType.LOOP));
         return PlayState.CONTINUE;
     }
 

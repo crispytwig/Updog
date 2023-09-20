@@ -2,6 +2,7 @@ package com.crispytwig.updog.client.model;
 
 import com.crispytwig.updog.Updog;
 import com.crispytwig.updog.entity.Pug;
+import com.crispytwig.updog.entity.Retriever;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
@@ -20,7 +21,12 @@ public class PugModel extends GeoModel<Pug> {
 
 	@Override
 	public ResourceLocation getTextureResource(Pug entity) {
-		return new ResourceLocation(Updog.MOD_ID, "textures/entity/pug.png");
+		if (entity.getVariant().getId() == 0) {
+			return new ResourceLocation(Updog.MOD_ID, "textures/entity/pug/fawn.png");
+		} else if (entity.getVariant().getId() == 1) {
+			return new ResourceLocation(Updog.MOD_ID, "textures/entity/pug/black.png");
+		}
+		return new ResourceLocation(Updog.MOD_ID, "textures/entity/pug/fawn.png");
 	}
 
 	@Override
